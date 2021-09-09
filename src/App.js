@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Table, Tag, Space } from 'antd';
+import {Table, Tag, Space, Button} from 'antd';
 
 import './App.css'
 import 'antd/dist/antd.css'
@@ -20,7 +20,7 @@ const pages=
 class App extends Component {
   constructor() {
     super();
-    pages.search=<Searcher data={this.state.data}/>
+    pages.search=<Searcher onRef={(ref)=>{this.child = ref}} data={this.state.data} onSelectChange={this.onSelectChange.bind(this)}/>
 
     pages.create=<Creator/>
 
@@ -82,31 +82,47 @@ class App extends Component {
           },
         ],
       //当前在展示哪一页
-      currentPage:'create'
+      currentPage:'search',
+      exportAble:false,
     }
   onClickCreateBtn()
   {
-    this.setState({currentPage:'create'})
+    this.setState({currentPage:'create', exportAble:false})
   }
   onClickSearchBtn()
   {
-    this.setState({currentPage:'search'})
+    this.child.onReset();
+    this.setState({currentPage:'search', exportAble:false})
   }
   onClickExportBtn()
   {
     this.setState({currentPage:'export'})
   }
+
+  onSelectChange(rows)
+  {
+    if (rows && rows.length>0)
+    {
+      this.setState({exportAble:true})
+    }
+    else
+    {
+      this.setState({exportAble:false})
+    }
+  }
   render() {
     let currentPage = pages[this.state.currentPage];
+    let currentPageIndex = this.state.currentPage;
     let onClickCreateBtn = this.onClickCreateBtn.bind(this);
     let onClickSearchBtn = this.onClickSearchBtn.bind(this);
     let onClickExportBtn = this.onClickExportBtn.bind(this);
+    let exportAble = this.state.exportAble;
     return (
       <div className={'main'}>
         <div id={'按钮行'} className={'buttonLine'}>
-          <div className={'btn'} onClick={onClickCreateBtn}>新增</div>
-          <div className={'btn'} onClick={onClickSearchBtn}>查询</div>
-          <div className={'btn'} onClick={onClickExportBtn}>导出</div>
+          <Button size={'normal'} type={currentPageIndex ==='create' ? 'primary':''} onClick={onClickCreateBtn}>新增</Button>
+          <Button size={'normal'} type={currentPageIndex ==='search' ? 'primary':''} onClick={onClickSearchBtn}>查询</Button>
+          <Button size={'normal'} type={currentPageIndex ==='export' ? 'primary':''} disabled={!exportAble} onClick={onClickExportBtn}>导出</Button>
         </div>
         {currentPage}
       </div>

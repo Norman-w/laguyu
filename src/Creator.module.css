@@ -2,5 +2,54 @@
 {
   width: 100%;
   height: 100%;
-  background-color: #e9f1e9;
+  background-color: #edf5ed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.content
+{
+  width: 800px;
+  /*height: 600px;*/
+  /*border:  1px solid red;*/
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
+}
+.firstLine
+{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.btnLine
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin: 10px;
+  width: 100%;
+  text-align: center;
+  /*border: 1px solid red;*/
+}
+.createBtn
+{
+  width: 30%;
+}
+.addressDetailAndPasteBtnLine
+{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.pasteBtnAndParseBtn
+{
+  margin-left: 10px;
 }

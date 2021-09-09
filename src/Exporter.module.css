@@ -2,5 +2,34 @@
 {
   width: 100%;
   height: 100%;
-  background-color: #fcf7f0;
+  background-color: #f8f4f1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  white-space: nowrap;
+}
+.template
+{
+  width: 30vw;
+  height: 30vh;
+  border-radius: 10px;
+  box-shadow: 0 0 2px 1px lightgray;
+  font-size: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: 0.5s;
+}
+.templateHover
+{
+  composes: template;
+  box-shadow: 0 0 2px 1px skyblue;
+  font-size: 45px;
+  transition: 0.5s;
+  background-color: #c8eecb;
 }
