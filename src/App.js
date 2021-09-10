@@ -14,17 +14,20 @@ const pages=
   {
     create:null,
     search:null,
-    export:null,
+    exportSelected:null,
   }
 
 class App extends Component {
   constructor() {
     super();
-    pages.search=<Searcher onRef={(ref)=>{this.child = ref}} data={this.state.data} onSelectChange={this.onSelectChange.bind(this)}/>
+    this.state.data=[];
+    pages.search=<Searcher onRef={(ref)=>{this.child = ref}} onSelectChange={this.onSelectChange.bind(this)}/>
 
     pages.create=<Creator/>
 
-    pages.export=<Exporter/>
+    pages.exportSelected=<Exporter/>
+
+    pages.exportAllUnExport=<Exporter/>
   }
   state=
     {
@@ -91,12 +94,21 @@ class App extends Component {
   }
   onClickSearchBtn()
   {
-    this.child.onReset();
-    this.setState({currentPage:'search', exportAble:false})
+    if (this.state.currentPage === 'search')
+    {
+      // this.child.onReset();
+    }
+    else {
+      this.setState({currentPage: 'search', exportAble: false})
+    }
   }
-  onClickExportBtn()
+  onClickExportAllUnExportBtn()
   {
-    this.setState({currentPage:'export'})
+    this.setState({currentPage:'exportAllUnExport'})
+  }
+  onClickExportSelectedBtn()
+  {
+    this.setState({currentPage:'exportSelected'});
   }
 
   onSelectChange(rows)
@@ -115,15 +127,21 @@ class App extends Component {
     let currentPageIndex = this.state.currentPage;
     let onClickCreateBtn = this.onClickCreateBtn.bind(this);
     let onClickSearchBtn = this.onClickSearchBtn.bind(this);
-    let onClickExportBtn = this.onClickExportBtn.bind(this);
+    let onClickExportAllUnExportBtn = this.onClickExportAllUnExportBtn.bind(this);
+    let onClickExportSelectedBtn = this.onClickExportSelectedBtn.bind(this);
     let exportAble = this.state.exportAble;
     return (
       <div className={'main'}>
         <div id={'按钮行'} className={'buttonLine'}>
           <Button size={'normal'} type={currentPageIndex ==='create' ? 'primary':''} onClick={onClickCreateBtn}>新增</Button>
           <Button size={'normal'} type={currentPageIndex ==='search' ? 'primary':''} onClick={onClickSearchBtn}>查询</Button>
-          <Button size={'normal'} type={currentPageIndex ==='export' ? 'primary':''} disabled={!exportAble} onClick={onClickExportBtn}>导出</Button>
-        </div>
+          <div className={'exportBtnLine'}>
+            <div className={'b1'}>
+              <Button size={'normal'} type={currentPageIndex ==='exportAllUnExport' ? 'primary':''} disabled={!exportAble} onClick={onClickExportAllUnExportBtn}>导出选中项</Button>
+            </div>
+            <Button size={'normal'} type={currentPageIndex ==='exportSelected' ? 'primary':''} onClick={onClickExportSelectedBtn}>导出全部未导出项</Button>
+          </div>
+          </div>
         {currentPage}
       </div>
     );

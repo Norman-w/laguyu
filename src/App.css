@@ -47,3 +47,15 @@
   user-select: none;
   cursor: pointer;
 }
+
+.exportBtnLine
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.b1
+{
+  margin-right: 10px;
+}

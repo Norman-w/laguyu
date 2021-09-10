@@ -7,7 +7,7 @@ class App {
     }
     globalData = {
         account: undefined,
-        session: '1717',
+        session: 'laguyu',
         //region 地区数据
         addressPickerData: [{
             value: '北京市',
