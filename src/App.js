@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Table, Tag, Space, Button} from 'antd';
+import {Table, Tag, Space, Button, message} from 'antd';
+import app from "./global/app";
 
 import './App.css'
 import 'antd/dist/antd.css'
@@ -25,9 +26,9 @@ class App extends Component {
 
     pages.create=<Creator/>
 
-    pages.exportSelected=<Exporter/>
+    pages.exportSelected=<Exporter onClickTemplate={this.onClickTemplate.bind(this)}/>
 
-    pages.exportAllUnExport=<Exporter/>
+    pages.exportAllUnExport=<Exporter onClickTemplate={this.onClickTemplate.bind(this)}/>
   }
   state=
     {
@@ -87,6 +88,7 @@ class App extends Component {
       //当前在展示哪一页
       currentPage:'search',
       exportAble:false,
+      willExportTidList:[],
     }
   onClickCreateBtn()
   {
@@ -115,12 +117,76 @@ class App extends Component {
   {
     if (rows && rows.length>0)
     {
-      this.setState({exportAble:true})
+      this.setState({exportAble:true,willExportTidList:rows})
     }
     else
     {
-      this.setState({exportAble:false})
+      this.setState({exportAble:false,willExportTidList:[]})
     }
+  }
+  onClickTemplate(selectedTemp)
+  {
+    console.log('点了模板')
+    this.setState({currentPage:'create'});
+    if (this.state.willExportTidList.length>0)
+    {//如果是选择了只导出部分的话
+      let sidStr = '';
+      for (let i = 0; i < this.state.willExportTidList.length; i++) {
+        let current = this.state.willExportTidList[i];
+        if(sidStr.length>0)
+        {
+          sidStr += ',';
+        }
+        sidStr += ''+current;
+      }
+      app.request(
+          {
+            api:"qp.api.customization.laguyu.salebills.export2excel",
+            params:
+                {
+                  // ExportAllUnExport
+                  templatecode:selectedTemp.id,
+                  templatename:selectedTemp.name,
+                  salebillidslist:sidStr,
+                },
+            success:(res)=> {
+              console.log('下载成功了',res)
+              message.success('操作成功,请查看下载的文件');
+            },
+            errProcFunc:(res)=>
+            {
+              message.error('操作失败:'+res.ErrMsg);
+              console.log('下载失败了',res)
+            }
+          }
+      )
+    }
+    else
+    {
+      //选择导出全部未导出项
+      app.request(
+          {
+            api:"qp.api.customization.laguyu.salebills.export2excel",
+            params:
+                {
+                  // ExportAllUnExport
+                  templatecode:selectedTemp.id,
+                  templatename:selectedTemp.name,
+                  ExportAllUnExport:true,
+                },
+            success:(res)=> {
+              console.log('下载成功了',res)
+              message.success('操作成功,请查看下载的文件');
+            },
+            errProcFunc:(res)=>
+            {
+              message.error('操作失败:'+res.ErrMsg);
+              console.log('下载失败了',res)
+            }
+          }
+      )
+    }
+
   }
   render() {
     let currentPage = pages[this.state.currentPage];

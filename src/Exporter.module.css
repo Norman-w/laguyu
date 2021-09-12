@@ -12,8 +12,10 @@
 }
 .template
 {
-  width: 30vw;
-  height: 30vh;
+  width: 18vw;
+  height: 18vh;
+  margin-top: 10px;
+  margin-left: 10px;
   border-radius: 10px;
   box-shadow: 0 0 2px 1px lightgray;
   font-size: 40px;

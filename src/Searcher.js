@@ -90,6 +90,7 @@ state=
   };
 
 componentDidMount() {
+  this.state.searchingStatus = "WAIT_SELLER_SEND_GOODS"
   this.onSearchSalebill();
 }
 

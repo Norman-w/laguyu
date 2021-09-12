@@ -11438,7 +11438,7 @@ class App {
         console.log(url);
         fetch(url).then(
             response => {
-                // console.log('fetch的response是:',response);
+                console.log('fetch的response是:',response);
                 return response.json()
             }
         ).then(
