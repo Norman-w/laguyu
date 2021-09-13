@@ -5,75 +5,75 @@ class Exporter extends Component {
       templates:
           [
               {
-                  id: 'xiaoyuan',
+                  id: 'laguyu.xiaoyuan',
                   name: '小圆',
               },
               {
-                  id: 'anmusi',
+                  id: 'laguyu.anmusi',
                   name: '安慕斯',
               },
               {
-                  id: 'chuchu',
+                  id: 'laguyu.chuchu',
                   name: 'chuchu',
               },
               {
-                  id: 'beeshum',
+                  id: 'laguyu.beeshum',
                   name: 'beeshum',
               },
               {
-                  id: 'haiguibaba',
+                  id: 'laguyu.haiguibaba',
                   name: '海龟爸爸',
               },
               {
-                  id: 'yiwei',
+                  id: 'laguyu.yiwei',
                   name: '伊威',
               },
               {
-                  id: 'aoluoli',
+                  id: 'laguyu.aoluoli',
                   name: '澳洛丽',
               },
               {
-                  id: 'gaolibaobei',
+                  id: 'laguyu.gaolibaobei',
                   name: '高丽宝贝',
               },
               {
-                  id: 'xingsha',
+                  id: 'laguyu.xingsha',
                   name: '星鲨',
               },
               {
-                  id: 'spb',
+                  id: 'laguyu.spb',
                   name: 'spb',
               },
               {
-                  id: 'aole',
+                  id: 'laguyu.aole',
                   name: '澳乐',
               },
               {
-                  id: 'shanmoshi',
+                  id: 'laguyu.shanmoshi',
                   name: '膳魔师',
               },
               {
-                  id: 'bailesi',
+                  id: 'laguyu.bailesi',
                   name: '百乐思',
               },
               {
-                  id: 'topstar',
+                  id: 'laguyu.topstar',
                   name: 'topstar',
               },
               {
-                  id: 'holoholo',
+                  id: 'laguyu.holoholo',
                   name: 'holoholo',
               },
               {
-                  id: 'inbebe',
+                  id: 'laguyu.inbebe',
                   name: 'inbebe',
               },
               {
-                  id: 'dishini',
+                  id: 'laguyu.dishini',
                   name: '迪士尼',
               },
               {
-                  id: 'bokefu',
+                  id: 'laguyu.bokefu',
                   name: '伯可福',
               },
           ],

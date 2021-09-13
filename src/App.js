@@ -69,6 +69,10 @@ class App extends Component {
           id:'exportTime',
           name:'导出时间',
         },
+        {
+          id:'action',
+          name:'操作'
+        }
       ],
       data:
         [
@@ -126,9 +130,10 @@ class App extends Component {
   }
   onClickTemplate(selectedTemp)
   {
-    console.log('点了模板')
+    console.log('点了模板',selectedTemp);
+    console.log('当前页面:', this.state.currentPage);
     this.setState({currentPage:'create'});
-    if (this.state.willExportTidList.length>0)
+    if (this.state.currentPage === 'exportSelected')
     {//如果是选择了只导出部分的话
       let sidStr = '';
       for (let i = 0; i < this.state.willExportTidList.length; i++) {
@@ -139,6 +144,7 @@ class App extends Component {
         }
         sidStr += ''+current;
       }
+      let that = this;
       app.request(
           {
             api:"qp.api.customization.laguyu.salebills.export2excel",
@@ -152,16 +158,18 @@ class App extends Component {
             success:(res)=> {
               console.log('下载成功了',res)
               message.success('操作成功,请查看下载的文件');
+              this.setState({willExportTidList:[],exportAble:false});
             },
             errProcFunc:(res)=>
             {
               message.error('操作失败:'+res.ErrMsg);
-              console.log('下载失败了',res)
+              console.log('下载失败了',res);
+              this.setState({willExportTidList:[],exportAble:false});
             }
           }
       )
     }
-    else
+    else if(this.state.currentPage === 'exportAllUnExport')
     {
       //选择导出全部未导出项
       app.request(
@@ -203,9 +211,9 @@ class App extends Component {
           <Button size={'normal'} type={currentPageIndex ==='search' ? 'primary':''} onClick={onClickSearchBtn}>查询</Button>
           <div className={'exportBtnLine'}>
             <div className={'b1'}>
-              <Button size={'normal'} type={currentPageIndex ==='exportAllUnExport' ? 'primary':''} disabled={!exportAble} onClick={onClickExportAllUnExportBtn}>导出选中项</Button>
+              <Button size={'normal'} type={currentPageIndex ==='exportSelected' ? 'primary':''} disabled={!exportAble} onClick={onClickExportSelectedBtn}>导出选中项</Button>
             </div>
-            <Button size={'normal'} type={currentPageIndex ==='exportSelected' ? 'primary':''} onClick={onClickExportSelectedBtn}>导出全部未导出项</Button>
+            <Button size={'normal'} type={currentPageIndex ==='exportAllUnExport' ? 'primary':''} onClick={onClickExportAllUnExportBtn}>导出全部未导出项</Button>
           </div>
           </div>
         {currentPage}

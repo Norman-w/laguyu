@@ -11399,87 +11399,120 @@ class App {
         //当商品没有图片的时候的代替面罩图片
         //maskImgWhenNoImg : 'http://pic.enni.group/upload/0/red.jpg',
     };
-    request = function ({api, params, success, errProcFunc, failProcFunc, serviceName,session}) {
-        // console.log('执行请求:', api, params, success, errProcFunc,failProcFunc, serviceName,session);
-        if (!this.globalData.session) {
-            let msg = 'invalid session err in request func at app.js' + api;
-            if (failProcFunc) {
-                failProcFunc(msg);
-            } else {
-                //message.error(msg);
-                console.log('%c' + msg, 'color:red;font-size:18px');
-            }
-        }
-        let url = '';
-        if (serviceName && serviceName === 'pdd') {
-            // url = "https://www.enni.group/qp/pdd/router/?type="
-            url=this.setting.pddRouterUrl;
+    request =async function ({api, params, success, errProcFunc, failProcFunc, serviceName,session}) {
+      // console.log('执行请求:', api, params, success, errProcFunc,failProcFunc, serviceName,session);
+      if (!this.globalData.session) {
+        let msg = 'invalid session err in request func at app.js' + api;
+        if (failProcFunc) {
+          failProcFunc(msg);
         } else {
-            // url = "https://www.enni.group/netserver/router.aspx?method="
-            url=this.setting.qpNetServerRouterUrl;
+          //message.error(msg);
+          console.log('%c' + msg, 'color:red;font-size:18px');
         }
-        let s = '';
-        if(session)
-        {
-            s= session;
+      }
+      let url = '';
+      if (serviceName && serviceName === 'pdd') {
+        // url = "https://www.enni.group/qp/pdd/router/?type="
+        url = this.setting.pddRouterUrl;
+      } else {
+        // url = "https://www.enni.group/netserver/router.aspx?method="
+        url = this.setting.qpNetServerRouterUrl;
+      }
+      let s = '';
+      if (session) {
+        s = session;
+      } else if (this.globalData.session) {
+        s = this.globalData.session;
+      }
+      url += 'method=' + api
+        + "&session="
+        + s;
+      if (params !== undefined) {
+        for (var val in params) {
+          url += "&" + val + "=" + params[val];
         }
-        else if (this.globalData.session)
-        {
-            s = this.globalData.session;
-        }
-        url += 'method='+ api
-            + "&session="
-            + s;
-        if (params !== undefined) {
-            for (var val in params) {
-                url += "&" + val + "=" + params[val];
-            }
-        }
-        console.log(url);
-        fetch(url).then(
-            response => {
-                console.log('fetch的response是:',response);
-                return response.json()
-            }
-        ).then(
-            // data=>console.log('fetch后的结果是:',data)
-            (data) => {
+      }
+      console.log(url);
+
+      fetch(url).then(
+        rsp => {
+          const contentType = rsp.headers.get("Content-Type");
+          // console.log('fetch获取到的content type是:', contentType);
+          const contentDisposition = rsp.headers.get("Content-disposition");
+          // 根据返回contentType，处理是json，还是下载文件
+          if (contentType.toLowerCase().indexOf('octet-stream') < 0) {
+            rsp.json().then(
+              // data=>console.log('fetch后的结果是:',data)
+              (data) => {
                 if (data) {
-                    if (this.debugMode)
-                        console.log('获取到data:', data);
-                    if (data.IsError === true)// || !data.ErrMsg || !data.ErrCode)
-                    {
-                        if (errProcFunc) {
-                            errProcFunc(data)
-                        } else {
-                            message.warn(JSON.stringify(data));
-                            if (this.debugMode)
-                                console.log('%c在home.js中未获取到错误处理函数,由控制台输出,request发生错误:' + data.ErrMsg, 'color:red;font-size:12px');
-                        }
+                  if (this.debugMode)
+                    console.log('获取到data:', data);
+                  if (data.IsError === true)// || !data.ErrMsg || !data.ErrCode)
+                  {
+                    if (errProcFunc) {
+                      errProcFunc(data)
                     } else {
-                        if (success) {
-                            success(data);
-                        }
+                      message.warn(JSON.stringify(data));
+                      if (this.debugMode)
+                        console.log('%c在home.js中未获取到错误处理函数,由控制台输出,request发生错误:' + data.ErrMsg, 'color:red;font-size:12px');
                     }
+                  } else {
+                    if (success) {
+                      success(data);
+                    }
+                  }
                 } else {
-                    if (failProcFunc) {
-                        failProcFunc();
-                    }
+                  if (failProcFunc) {
+                    failProcFunc();
+                  }
                 }
-            }
-        ).catch((e)=>
-        {
-            console.error('app.js,fetch获取到json,进行回调函数的调用时发生错误e:',e,
-                '请求名称:',api,
-                '参数集:',params,
-                '执行成功回调函数:', success,
-                '服务器返回错误消息回调函数:',errProcFunc,
-                '发生网络等错误回调函数:',failProcFunc,
-                '服务名称', serviceName,
-                '授权码:',session,
-                'url:', url
-            );
-        });
+              }
+            )
+          }
+          else
+          {
+            rsp.blob().then(
+              (blob)=>
+              {
+                if(blob)
+                {
+                  // console.log('要下载的文件的信息是:', contentDisposition);
+                  //attachment; filename=%e6%98%9f%e9%b2%a8-2021-09-12_20_58_27.xlsx
+                  // 创建一个a标签，用于下载
+                  var a = document.createElement('a');
+                  var downUrl = window.URL.createObjectURL(blob);
+                  let ind = contentDisposition.indexOf('filename=');
+                  if(ind>=0)
+                  {
+
+                    var fileName =decodeURIComponent( contentDisposition.substr(ind+9));
+                    a.href = downUrl;
+                    a.download = fileName;
+                    a.click();
+                    window.URL.revokeObjectURL(downUrl);
+                  }
+                }
+                else
+                {
+                  console.error('blob转换文件为空');
+                }
+              }
+            )
+          }
+        }
+      ).catch((e)=>
+      {
+        console.error('app.js,fetch获取到json,进行回调函数的调用时发生错误e:',e,
+          '请求名称:',api,
+          '参数集:',params,
+          '执行成功回调函数:', success,
+          '服务器返回错误消息回调函数:',errProcFunc,
+          '发生网络等错误回调函数:',failProcFunc,
+          '服务名称', serviceName,
+          '授权码:',session,
+          'url:', url
+        );
+      });
     }
 }
 const app = new App();
