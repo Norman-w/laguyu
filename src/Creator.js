@@ -186,10 +186,15 @@ class Creator extends React.Component
     this.setState({inputtingValues:this.state.inputtingValues})
 
   }
-  onAddressChange(e)
+  onWaitParseAddressChange(e)
   {
     this.state.waitParseString=e.target.value;
     this.setState({waitParseString:this.state.waitParseString})
+  }
+  onAddressChange(e)
+  {
+    this.state.inputtingValues.address=e.target.value;
+    this.setState({inputtingValues:this.state.inputtingValues})
   }
   onMemoChange(e)
   {
@@ -305,7 +310,7 @@ class Creator extends React.Component
               value={this.state.waitParseString}
               placeholder="输入或粘贴将要解析的信息,商品信息请在独立行"
               allowClear
-              onChange={this.onAddressChange.bind(this)}
+              onChange={this.onWaitParseAddressChange.bind(this)}
               autoSize={{ minRows: 6, maxRows: 99 }}
           />
         </Col>
