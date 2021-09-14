@@ -150,7 +150,7 @@ class Creator extends React.Component
           api:'qp.api.salebill.add',
           params:
               {
-                SalebillJson:JSON.stringify(bill),
+                SalebillJson: encodeURIComponent(JSON.stringify(bill)),
               },
           success:
               (res)=>
@@ -161,6 +161,16 @@ class Creator extends React.Component
                 {
                   success = true;
                   message.success('录入成功,编号:'+res.SalebillId);
+                  let newInputtingValue = {
+                    province:'',
+                    city:'',
+                    area:'',
+                    name:'',
+                    mobile:'',
+                    address:'',
+                    memo:'',
+                  };
+                  that.setState({inputtingValues: newInputtingValue, waitParseString:'',pickerValue:[]});
                 }
                 else
                 {
