@@ -132,7 +132,7 @@ class App extends Component {
   {
     console.log('点了模板',selectedTemp);
     console.log('当前页面:', this.state.currentPage);
-    this.setState({currentPage:'create'});
+    this.setState({currentPage:'create', exportAble:false});
     if (this.state.currentPage === 'exportSelected')
     {//如果是选择了只导出部分的话
       let sidStr = '';
@@ -207,8 +207,8 @@ class App extends Component {
     return (
       <div className={'main'}>
         <div id={'按钮行'} className={'buttonLine'}>
-          <Button size={'normal'} type={currentPageIndex ==='create' ? 'primary':''} onClick={onClickCreateBtn}>新增</Button>
-          <Button size={'normal'} type={currentPageIndex ==='search' ? 'primary':''} onClick={onClickSearchBtn}>查询</Button>
+          <Button size={'normal'} type={currentPageIndex ==='create' ? 'primary':''} onClick={onClickCreateBtn}>新增订单</Button>
+          <Button size={'normal'} type={currentPageIndex ==='search' ? 'primary':''} onClick={onClickSearchBtn}>订单查询</Button>
           <div className={'exportBtnLine'}>
             <div className={'b1'}>
               <Button size={'normal'} type={currentPageIndex ==='exportSelected' ? 'primary':''} disabled={!exportAble} onClick={onClickExportSelectedBtn}>导出选中项</Button>

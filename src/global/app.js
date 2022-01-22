@@ -11437,8 +11437,10 @@ class App {
       fetch(url).then(
         rsp => {
           const contentType = rsp.headers.get("Content-Type");
-          // console.log('fetch获取到的content type是:', contentType);
+          console.log('fetch获取到的content type是:', contentType);
           const contentDisposition = rsp.headers.get("Content-disposition");
+          // const filenameInHeader = rsp.headers.get('filename');
+          // console.log('文件名', filenameInHeader);
           // 根据返回contentType，处理是json，还是下载文件
           if (contentType.toLowerCase().indexOf('octet-stream') < 0) {
             rsp.json().then(

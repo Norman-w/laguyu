@@ -1,12 +1,13 @@
 .main
 {
   width: 100%;
-  height: 100%;
+  /*min-height: 100%;*/
   background-color: #edf5ed;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-grow: 1;
 }
 .content
 {
@@ -52,4 +53,40 @@
 .pasteBtnAndParseBtn
 {
   margin-left: 10px;
+}
+.itemContent
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /*border: 1px solid red;*/
+  width: 100%;
+  min-height: 20px;
+}
+.actionArea
+{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.removeArea
+{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+.count
+{
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
 }

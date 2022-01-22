@@ -54,9 +54,21 @@ class Searcher extends Component {
       width: 200,
     },
     {
-      title: '商品信息',
-      key: 'items',
-      dataIndex: 'items',
+      title: '商品名称',
+      key: 'item',
+      dataIndex: 'item',
+    },
+    {
+      title: '数量',
+      dataIndex: 'count',
+    },
+    {
+      title: '成本',
+      dataIndex: 'costPrice',
+    },
+    {
+      title: '售价',
+      dataIndex: 'price',
     },
     {
       title: '录入时间',
@@ -226,7 +238,11 @@ componentDidMount() {
                 city:current.Receiver_City,
                 area:current.Receiver_Area,
                 address:current.Receiver_Address,
-                items:current.SellerMemo,
+                // items:current.SellerMemo,
+              item:current.Details[0].Name,
+              count: current.Details[0].Count?  current.Details[0].Count: 0,
+              price:current.Details[0].Price,
+              costPrice:current.Details[0].CostPrice,
                 createTime: current.CreateTime,
                 exportTime: current.ModifiedTime === current.CreateTime? '': current.ModifiedTime,
                 status:current.Status,

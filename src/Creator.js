@@ -1,9 +1,10 @@
 import React from 'react';
-import {Cascader, message, Row, Col, Button, Space, Checkbox, Modal} from 'antd';
+import {Table,Cascader, message, Row, Col, Button, Space, Checkbox, Modal} from 'antd';
 import { Input } from 'antd';
 import app from "./global/app";
 import styles from './Creator.module.css'
 import InputModal from "./InputModal";
+import ItemSelect from "./ItemSelect";
 
 
 
@@ -13,8 +14,51 @@ const { TextArea } = Input;
 
 
 
+
 class Creator extends React.Component
 {
+columns=
+  [
+    {
+      title:'商品名称',
+      dataIndex:'Name',
+      key:'Name',
+    },
+    {
+      title:'编码',
+      dataIndex: 'ShortName',
+      // key:'ShortName',
+    },
+    {
+      title:'价格',
+      dataIndex: 'Price',
+    },
+    {
+      title:'成本',
+      dataIndex: 'CostPrice'
+    },
+    {
+      title:'数量',
+      render:(a,b)=>{
+        let count = b.Count?b.Count:'0';
+        let border=this.state.editing;
+        return <div className={styles.actionArea}>
+          <Button size={'small'}
+                  onClick={()=>{this.onClickMinusCount()}}
+          >-</Button>
+          <div className={styles.count}>
+            {count}
+          </div>
+          <Button size={'small'}
+                  onClick={()=>{
+                    this.onClickAddCount();
+                  }}
+          >+</Button>
+          {/*<Button type={'danger'} size={'small'}>去除</Button>*/}
+        </div>
+      }
+    },
+  ]
   state={
     showingFullAddressInputModal:false,
     inputtingValues:
@@ -30,6 +74,8 @@ class Creator extends React.Component
         },
     pickerValue:[],
     waitParseString:null,
+    items:[
+    ]
   }
   componentDidMount() {
 
@@ -83,6 +129,14 @@ class Creator extends React.Component
     return (S4()+S4()+S4()+S4()+S4()+S4()+S4()+S4());
   }
   addSeller() {
+  if (this.state.items && this.state.items.length===1)
+  {
+
+  }
+  else
+  {
+    return;
+  }
     //region 地址校验
     console.log(this.state.inputtingValues);
 
@@ -116,11 +170,11 @@ class Creator extends React.Component
       message.warn('请输入有效的发货人手机号');
       return;
     }
-    if (!this.state.inputtingValues.memo)
-    {
-      message.warn('请输入商品信息');
-      return;
-    }
+    // if (!this.state.inputtingValues.memo)
+    // {
+    //   message.warn('请输入商品信息');
+    //   return;
+    // }
     //endregion
     //region 包裹信息创建
     let createTime = this.getNowFormatDate();
@@ -141,7 +195,12 @@ class Creator extends React.Component
       SellerMemo:this.state.inputtingValues.memo,
       Status:'WAIT_SELLER_SEND_GOODS',
       Balance:true,
-      Details:[],
+      // Details:[],
+      Details: [
+        {
+          ...this.state.items[0],
+        }
+      ],
     };
     //endregion
     let that = this;
@@ -292,19 +351,94 @@ class Creator extends React.Component
   {
     return clipboardy.read();
   }
+  onClickSelectItemBtn()
+  {
+    let md = Modal.info(
+      {
+        title:'输入关键字以进行搜索,多关键字使用空格隔开,单击选中行以选择',
+        closable:true,
+        content:<ItemSelect onSelected={(item)=>this.onSelectedItem(item,md)}/>,
+        width:1000,
+        okButtonProps:
+          {
+            disabled:true,
+            hidden:true
+          }
+      }
+    );
+  }
+  onSelectedItem(item,md)
+  {
+    item.Count=1;
+    this.setState({items:[...this.state.items,item]})
+    // message.success(JSON.stringify(this.state));
+    md.destroy();
+  }
+  onClickMinusCount()
+  {
+    if (!this.state.items)
+      return;
+    if (!this.state.items[0])
+      return;
+    if (this.state.items[0].Count<0)
+    {
+      return;
+    }
+    if (this.state.items[0].Count>100000)
+    {
+      return;
+    }
+    let old = this.state.items;
+    let newCount = old[0].Count>1? old[0].Count-1:0;
+    if (newCount===0)
+    {
+      this.setState({items:[]});
+    }
+    else {
+      old[0].Count = newCount;
+      this.setState({items: old});
+    }
+  }
+  onClickAddCount()
+  {
+    if (!this.state.items)
+      return;
+    if (!this.state.items[0])
+      return;
+    if (this.state.items[0].Count<0)
+    {
+      return;
+    }
+    if (this.state.items[0].Count>100000)
+    {
+      return;
+    }
+    let old = this.state.items;
+    old[0].Count = old[0].Count? old[0].Count+1:1;
+    this.setState({items:old});
+    // message.warn('xin shuliang ' + JSON.stringify(this.state.items));
+  }
   render() {
     let pickerData = app.globalData.addressPickerData;
     let onClickSubmitBtn = this.addSeller.bind(this);
-    let mustSetAsDefault = this.props.isTheSellerFirstSender;
-    let onClickShowParseModalBtn = this.onClickShowParseModalBtn.bind(this);
+    // let mustSetAsDefault = this.props.isTheSellerFirstSender;
+    // let onClickShowParseModalBtn = this.onClickShowParseModalBtn.bind(this);
     let onClickParseBtn = this.onClickParseBtn.bind(this);
     let parseAddressModal  = null;
+    let items = this.state.items;
+    let onClickSelectItemBtn = this.onClickSelectItemBtn.bind(this);
+    let hasItem = this.state.items&& this.state.items.length===1;
     if (this.state.showingFullAddressInputModal)
     {
       parseAddressModal = <InputModal onConfirm={this.onClickParseAddressBtn.bind(this)}
                                       onCancel={()=>{this.setState({showingFullAddressInputModal:false})}}
       />
     }
+
+
+    // console.log('渲染时的商品:',items);
+
+
     return <div className={styles.main}><Space size={8} direction='vertical' className={styles.content}>
       {parseAddressModal}
       <Row>
@@ -318,7 +452,7 @@ class Creator extends React.Component
         <Col style={{width:'100%'}}>
           <TextArea
               value={this.state.waitParseString}
-              placeholder="输入或粘贴将要解析的信息,商品信息请在独立行"
+              placeholder="输入或粘贴将要解析的信息"
               allowClear
               onChange={this.onWaitParseAddressChange.bind(this)}
               autoSize={{ minRows: 6, maxRows: 99 }}
@@ -336,15 +470,31 @@ class Creator extends React.Component
           <TextArea value={this.state.inputtingValues.address} placeholder="输入详细地址信息:" allowClear onChange={this.onAddressChange.bind(this)}/>
         </Col>
       </Row>
-      <Row>
-        <Col style={{width:'100%'}}>
-          <TextArea value={this.state.inputtingValues.memo} placeholder="请输入商品信息" allowClear onChange={this.onMemoChange.bind(this)}/>
-        </Col>
-      </Row>
-
+      {/*<Row>*/}
+      {/*  <Col style={{width:'100%'}}>*/}
+      {/*    <TextArea value={this.state.inputtingValues.memo} placeholder="请输入商品信息" allowClear onChange={this.onMemoChange.bind(this)}/>*/}
+      {/*  </Col>*/}
+      {/*</Row>*/}
+      <div className={styles.itemContent}>
+        <Table columns={this.columns}
+               size={'small'}
+               dataSource={items}
+          // dataSource={this.data}
+               style={{width:'100%'}}
+        />
+      </div>
       <Row>
         <Col className={styles.btnLine}>
-          <Button type="primary" shape="round" size='large' onClick={onClickSubmitBtn} className={styles.createBtn}>创建</Button>
+          {!hasItem&&<Button type={'ghost'}
+                  onClick={onClickSelectItemBtn}
+          >选择商品</Button>}
+        </Col>
+      </Row>
+      <Row>
+        <Col className={styles.btnLine}>
+          <Button type="primary" shape="round" size='large'
+                  disabled={!hasItem}
+                  onClick={onClickSubmitBtn} className={styles.createBtn}>创建</Button>
         </Col>
       </Row>
     </Space>
